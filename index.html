@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jumping Girl - Food Escape</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="game-wrapper">
+    <div id="canvasContainer" style="position: relative; display: inline-block;">
+      <canvas id="gameCanvas" width="360" height="640">
+        ???됰슢??怨???Canvas??筌왖?癒곕릭筌왖 ??녿뮸??덈뼄.
+      </canvas>
+      <!-- GIF ?醫딅빍筌롫뗄???륁뒠 img ??볥젃 (Canvas ?袁⑸퓠 ??살쒔??됱뵠) -->
+      <img id="girlGif" src="" style="position: absolute; pointer-events: none; display: none; z-index: 10;" alt="">
+      <img id="slideGif" src="" style="position: absolute; pointer-events: none; display: none; z-index: 10;" alt="">
+      <img id="shootGif" src="" style="position: absolute; pointer-events: none; display: none; z-index: 10;" alt="">
+      <img id="bombGif" src="" style="position: absolute; pointer-events: none; display: none; z-index: 10;" alt="">
+    </div>
+  </div>
+  <script src="js/config.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>

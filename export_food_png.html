@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>음식 이모지 → PNG 내보내기</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: sans-serif; padding: 16px; background: #1a1a2e; color: #eee; }
+    h1 { font-size: 1.1rem; margin-bottom: 8px; }
+    p { font-size: 0.9rem; color: #aaa; margin-bottom: 16px; }
+    .size-opts { margin-bottom: 12px; }
+    .size-opts label { margin-right: 12px; cursor: pointer; }
+    .size-opts input { margin-right: 4px; }
+    .grid { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
+    .card {
+      background: #16213e; border-radius: 8px; padding: 12px; text-align: center;
+      width: 120px;
+    }
+    .card canvas { display: block; margin: 0 auto 8px; background: #2a2a4a; border-radius: 4px; }
+    .card .name { font-size: 0.75rem; color: #888; margin-bottom: 6px; }
+    .card button {
+      background: #0f3460; color: #eee; border: none; padding: 6px 10px;
+      border-radius: 4px; cursor: pointer; font-size: 0.8rem;
+    }
+    .card button:hover { background: #1a4a7a; }
+    .all-btn { margin-top: 16px; padding: 10px 16px; font-size: 0.95rem; }
+  </style>
+</head>
+<body>
+  <h1>젠되어 다가오는 음식 이미지 → PNG 내보내기</h1>
+  <p>게임과 동일한 이모지(🍎🍔🍕🍟🌭)를 PNG로 그려 다운로드합니다. 배경 투명. 그림 편집 후 <code>graphic_resource/food/</code>에 넣어 사용할 수 있습니다.</p>
+
+  <div class="size-opts">
+    <label><input type="radio" name="size" value="40" checked> 40×40 (게임과 동일)</label>
+    <label><input type="radio" name="size" value="64"> 64×64</label>
+    <label><input type="radio" name="size" value="128"> 128×128 (편집용 권장)</label>
+  </div>
+
+  <div class="grid" id="grid"></div>
+  <button class="all-btn" id="allBtn">한 번에 5개 모두 받기</button>
+
+  <script>
+    (function () {
+      'use strict';
+
+      const FOODS = [
+        { emoji: '🍎', id: 'apple', name: 'food_apple.png' },
+        { emoji: '🍔', id: 'burger', name: 'food_burger.png' },
+        { emoji: '🍕', id: 'pizza', name: 'food_pizza.png' },
+        { emoji: '🍟', id: 'fries', name: 'food_fries.png' },
+        { emoji: '🌭', id: 'hotdog', name: 'food_hotdog.png' }
+      ];
+
+      function getSize() { return parseInt(document.querySelector('input[name="size"]:checked').value, 10) || 64; }
+
+      function drawEmojiToCanvas(canvas, emoji, size) {
+        canvas.width = size;
+        canvas.height = size;
+        canvas.style.width = size + 'px';
+        canvas.style.height = size + 'px';
+        const ctx = canvas.getContext('2d');
+        // 배경 없음 = PNG에서 투명
+        const fontSize = Math.round(32 * (size / 40));
+        ctx.font = fontSize + 'px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(emoji, size / 2, size / 2);
+      }
+
+      function download(canvas, filename) {
+        canvas.toBlob(function (blob) {
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = filename;
+          a.click();
+          URL.revokeObjectURL(a.href);
+        }, 'image/png');
+      }
+
+      function buildCard(food) {
+        const size = getSize();
+        const card = document.createElement('div');
+        card.className = 'card';
+        const c = document.createElement('canvas');
+        c.dataset.emoji = food.emoji;
+        drawEmojiToCanvas(c, food.emoji, size);
+        const name = document.createElement('div');
+        name.className = 'name';
+        name.textContent = food.name;
+        const btn = document.createElement('button');
+        btn.textContent = 'PNG 저장';
+        btn.onclick = function () {
+          drawEmojiToCanvas(c, food.emoji, getSize());
+          download(c, food.name);
+        };
+        card.append(c, name, btn);
+        return { card, canvas: c, food };
+      }
+
+      function redrawAll(cards) {
+        const size = getSize();
+        cards.forEach(function (o) {
+          drawEmojiToCanvas(o.canvas, o.food.emoji, size);
+        });
+      }
+
+      var cards = [];
+      var grid = document.getElementById('grid');
+      FOODS.forEach(function (food) {
+        var o = buildCard(food);
+        cards.push(o);
+        grid.appendChild(o.card);
+      });
+
+      document.querySelectorAll('input[name="size"]').forEach(function (radio) {
+        radio.addEventListener('change', function () { redrawAll(cards); });
+      });
+
+      document.getElementById('allBtn').onclick = function () {
+        var size = getSize();
+        cards.forEach(function (o, i) {
+          drawEmojiToCanvas(o.canvas, o.food.emoji, size);
+        });
+        (function step(idx) {
+          if (idx >= cards.length) return;
+          download(cards[idx].canvas, cards[idx].food.name);
+          setTimeout(function () { step(idx + 1); }, 300);
+        })(0);
+      };
+    })();
+  </script>
+</body>
+</html>

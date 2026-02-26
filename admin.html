@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jumping Girl Admin</title>
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+  <main class="admin-shell">
+    <header class="topbar">
+      <div>
+        <h1>Jumping Girl Admin</h1>
+        <p class="muted">Local admin console (browser localStorage)</p>
+      </div>
+      <div class="topbar-actions">
+        <button id="btnReload" class="btn btn-ghost" type="button">Reload</button>
+        <a class="btn btn-primary" href="index.html">Back To Game</a>
+      </div>
+    </header>
+
+    <section class="grid cards" id="overviewCards"></section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Options</h2>
+        <div class="row">
+          <button id="btnOptionsDefault" class="btn btn-ghost" type="button">Reset Defaults</button>
+          <button id="btnOptionsSave" class="btn btn-primary" type="button">Save Options</button>
+        </div>
+      </div>
+      <form id="optionsForm" class="options-form"></form>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>High Scores</h2>
+        <div class="row">
+          <button id="btnAddScore" class="btn btn-ghost" type="button">Add Row</button>
+          <button id="btnSortScore" class="btn btn-ghost" type="button">Sort Desc</button>
+          <button id="btnClearScore" class="btn btn-danger" type="button">Clear</button>
+          <button id="btnSaveScore" class="btn btn-primary" type="button">Save Scores</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Name (3 letters)</th>
+              <th>Score</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="scoreTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Collection</h2>
+        <div class="row">
+          <button id="btnCollectionReset" class="btn btn-danger" type="button">Reset Collection</button>
+        </div>
+      </div>
+      <p class="muted">Discovered items from <code>jg_collection</code></p>
+      <ul id="collectionList" class="collection-list"></ul>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Raw Data Backup</h2>
+        <div class="row">
+          <button id="btnRawRefresh" class="btn btn-ghost" type="button">Refresh JSON</button>
+          <button id="btnRawSave" class="btn btn-primary" type="button">Apply JSON</button>
+        </div>
+      </div>
+      <textarea id="rawJson" rows="14" spellcheck="false"></textarea>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" aria-live="polite"></div>
+  <script src="js/admin.js" defer></script>
+</body>
+</html>

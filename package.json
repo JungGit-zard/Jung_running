@@ -1,0 +1,19 @@
+{
+  "name": "jumping-girl-food-escape",
+  "version": "1.0.0",
+  "description": "Jumping Girl - Food Escape. 세라복 소녀가 달리며 음식을 피하는 게임",
+  "scripts": {
+    "copy-web": "node scripts/copy-web.js",
+    "cap:sync": "npm run copy-web && npx cap sync",
+    "build:apk": "npm run cap:sync && cd android && gradlew.bat assembleDebug",
+    "test:playwright": "node test-game-playwright.js"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^5.6.0",
+    "@capacitor/cli": "^5.6.0",
+    "playwright": "^1.40.0"
+  },
+  "dependencies": {
+    "@capacitor/core": "^5.6.0"
+  }
+}

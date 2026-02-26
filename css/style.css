@@ -1,0 +1,56 @@
+/* Reset & Base */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #1a1a2e;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  overflow: hidden;
+}
+
+/* Game Wrapper - 餓λ쵐釉??類ｌ졊, 獄쏆꼷???*/
+.game-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 100vh;
+  padding: 8px;
+}
+
+/* Canvas - ?⑥쥙????쑴??9:16), 筌ㅼ뮆? ??由???쀫립, 獄쏆꼷???*/
+#gameCanvas {
+  display: block;
+  width: 100%;
+  max-width: min(360px, 100vw);
+  height: auto;
+  max-height: min(640px, 100vh);
+  aspect-ratio: 9 / 16;
+  background: #16213e;
+  border-radius: 8px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+}
+
+/* ?怨쀭뒄/????????용뮞???醫뤾문 獄쎻뫗? */
+#gameCanvas {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* GIF ?醫딅빍筌롫뗄???img ??볥젃 ?????*/
+#girlGif, #slideGif {
+  position: absolute;
+  pointer-events: none;
+  z-index: 10;
+  image-rendering: auto;
+  -ms-interpolation-mode: bicubic;
+}

@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>출석보상 - Jumping Girl</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Nanum+Myeongjo:wght@400;700;800&display=swap" rel="stylesheet">
+  <style>
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    @keyframes glow {
+      0%, 100% { box-shadow: 0 0 20px rgba(76, 175, 80, 0.5); }
+      50% { box-shadow: 0 0 30px rgba(76, 175, 80, 0.8); }
+    }
+
+    @keyframes shimmer {
+      0% { background-position: -1000px 0; }
+      100% { background-position: 1000px 0; }
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0f1419 100%);
+      background-size: 200% 200%;
+      animation: gradientShift 15s ease infinite;
+      min-height: 100vh;
+      padding: 20px;
+      color: #fff;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 20% 50%, rgba(76, 175, 80, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(156, 39, 176, 0.1) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+      position: relative;
+      z-index: 1;
+      animation: fadeIn 0.6s ease-out;
+    }
+
+    /* 헤더 - 카드 스타일 */
+    .header {
+      background: linear-gradient(135deg, rgba(30, 40, 60, 0.95) 0%, rgba(20, 30, 50, 0.95) 100%);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 30px;
+      margin-bottom: 30px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+      animation: shimmer 3s infinite;
+    }
+
+    .calendar-icon {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      position: relative;
+      box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    .calendar-icon::after {
+      content: '1';
+      position: absolute;
+      bottom: -8px;
+      right: -8px;
+      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+      color: #fff;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 900;
+      box-shadow: 0 2px 8px rgba(255, 107, 107, 0.5);
+    }
+
+    .header-title {
+      flex: 1;
+    }
+
+    .header-title h1 {
+      font-size: 32px;
+      font-weight: 900;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, #fff 0%, #ffeb3b 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -0.5px;
+    }
+
+    .header-title p {
+      font-size: 16px;
+      color: rgba(255, 255, 255, 0.7);
+      font-weight: 400;
+    }
+
+    .star-icon {
+      font-size: 32px;
+      animation: pulse 2s ease-in-out infinite;
+      filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.6));
+    }
+
+    /* 일일 출석 이벤트 섹션 - 카드 기반 */
+    .daily-section {
+      background: linear-gradient(135deg, rgba(20, 25, 40, 0.95) 0%, rgba(15, 20, 35, 0.95) 100%);
+      backdrop-filter: blur(10px);
+      border-radius: 24px;
+      padding: 35px;
+      margin-bottom: 30px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .daily-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #4caf50 0%, #45a049 50%, #4caf50 100%);
+      background-size: 200% 100%;
+      animation: shimmer 2s infinite;
+    }
+
+    .section-title {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 25px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title::before {
+      content: '';
+      width: 4px;
+      height: 24px;
+      background: linear-gradient(180deg, #4caf50 0%, #45a049 100%);
+      border-radius: 2px;
+    }
+
+    .reward-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .reward-slot {
+      position: relative;
+      background: linear-gradient(135deg, rgba(40, 50, 70, 0.9) 0%, rgba(30, 40, 60, 0.9) 100%);
+      border-radius: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      padding: 20px 15px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      min-height: 120px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .reward-slot::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 16px;
+      padding: 2px;
+      background: linear-gradient(135deg, rgba(76, 175, 80, 0.5), rgba(156, 39, 176, 0.5));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+
+    .reward-slot:hover {
+      transform: translateY(-8px) scale(1.05);
+      border-color: rgba(76, 175, 80, 0.6);
+      box-shadow: 0 12px 40px rgba(76, 175, 80, 0.4);
+    }
+
+    .reward-slot:hover::before {
+      opacity: 1;
+    }
+
+    .reward-slot.available {
+      border-color: #4caf50;
+      box-shadow: 0 0 20px rgba(76, 175, 80, 0.5);
+      animation: glow 2s ease-in-out infinite;
+    }
+
+    .reward-slot.claimed {
+      opacity: 0.6;
+      filter: grayscale(0.5);
+    }
+
+    .reward-slot.claimed::after {
+      content: '✓';
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+      color: #fff;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: bold;
+      box-shadow: 0 2px 10px rgba(76, 175, 80, 0.5);
+    }
+
+    .day-badge {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background: rgba(0, 0, 0, 0.6);
+      color: #fff;
+      padding: 4px 8px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .reward-icon {
+      font-size: 48px;
+      margin-bottom: 10px;
+      filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
+      transition: transform 0.3s;
+    }
+
+    .reward-slot:hover .reward-icon {
+      transform: scale(1.1) rotate(5deg);
+    }
+
+    .reward-quantity {
+      font-size: 14px;
+      font-weight: 700;
+      color: #ffeb3b;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .confirm-section {
+      text-align: center;
+      margin-top: 30px;
+      padding-top: 30px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .confirm-text {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 14px;
+      margin-bottom: 15px;
+      font-weight: 400;
+    }
+
+    .confirm-btn {
+      width: 100%;
+      max-width: 400px;
+      margin: 0 auto;
+      padding: 18px 30px;
+      background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+      border: none;
+      border-radius: 16px;
+      color: #fff;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .confirm-btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+
+    .confirm-btn:hover::before {
+      width: 300px;
+      height: 300px;
+    }
+
+    .confirm-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(76, 175, 80, 0.6);
+    }
+
+    .confirm-btn:active {
+      transform: translateY(-1px);
+    }
+
+    .confirm-btn span {
+      position: relative;
+      z-index: 1;
+    }
+
+    .register-text {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.4);
+      margin-top: 12px;
+    }
+
+    /* 한달 연속출석 보너스 섹션 */
+    .monthly-section {
+      background: linear-gradient(135deg, rgba(20, 25, 40, 0.95) 0%, rgba(15, 20, 35, 0.95) 100%);
+      backdrop-filter: blur(10px);
+      border-radius: 24px;
+      padding: 35px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .monthly-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #9c27b0 0%, #e91e63 50%, #9c27b0 100%);
+      background-size: 200% 100%;
+      animation: shimmer 2s infinite;
+    }
+
+    .monthly-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    .crown-icon {
+      font-size: 36px;
+      filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.8));
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    .monthly-header h2 {
+      font-size: 28px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #fff 0%, #ffd700 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .bonus-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 20px;
+      margin-bottom: 25px;
+      position: relative;
+    }
+
+    .bonus-slot {
+      position: relative;
+      background: linear-gradient(135deg, rgba(40, 50, 70, 0.9) 0%, rgba(30, 40, 60, 0.9) 100%);
+      border-radius: 20px;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      padding: 25px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      min-height: 180px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .bonus-slot::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 20px;
+      padding: 2px;
+      background: linear-gradient(135deg, rgba(156, 39, 176, 0.5), rgba(233, 30, 99, 0.5));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+
+    .bonus-slot:hover {
+      transform: translateY(-10px) scale(1.05);
+      border-color: rgba(156, 39, 176, 0.6);
+      box-shadow: 0 15px 50px rgba(156, 39, 176, 0.5);
+    }
+
+    .bonus-slot:hover::before {
+      opacity: 1;
+    }
+
+    .bonus-slot.final {
+      border-color: #9c27b0;
+      box-shadow: 0 0 30px rgba(156, 39, 176, 0.8);
+      background: linear-gradient(135deg, rgba(156, 39, 176, 0.3) 0%, rgba(233, 30, 99, 0.3) 100%);
+      animation: glow 2s ease-in-out infinite;
+    }
+
+    .bonus-day {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: linear-gradient(135deg, #9c27b0 0%, #e91e63 100%);
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 900;
+      box-shadow: 0 2px 10px rgba(156, 39, 176, 0.5);
+    }
+
+    .bonus-icon {
+      font-size: 64px;
+      margin: 15px 0;
+      filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4));
+      transition: transform 0.3s;
+    }
+
+    .bonus-slot:hover .bonus-icon {
+      transform: scale(1.15) rotate(-5deg);
+    }
+
+    .bonus-text {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #fff;
+      font-weight: 500;
+    }
+
+    .progress-container {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 20px;
+      padding: 20px;
+      margin-top: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .progress-bar-wrapper {
+      width: 100%;
+      height: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 15px;
+      position: relative;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #9c27b0 0%, #e91e63 50%, #9c27b0 100%);
+      background-size: 200% 100%;
+      border-radius: 10px;
+      width: 0%;
+      transition: width 0.6s ease;
+      box-shadow: 0 0 20px rgba(156, 39, 176, 0.6);
+      animation: shimmer 2s infinite;
+    }
+
+    .progress-text {
+      text-align: center;
+      font-size: 20px;
+      font-weight: 700;
+      color: #ffeb3b;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .back-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      padding: 12px 24px;
+      background: linear-gradient(135deg, rgba(233, 69, 96, 0.95) 0%, rgba(200, 50, 80, 0.95) 100%);
+      backdrop-filter: blur(10px);
+      border: none;
+      border-radius: 12px;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      z-index: 1000;
+      box-shadow: 0 4px 15px rgba(233, 69, 96, 0.4);
+    }
+
+    .back-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(233, 69, 96, 0.6);
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 10px;
+      }
+
+      .header {
+        padding: 20px;
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .header-title h1 {
+        font-size: 24px;
+      }
+
+      .reward-row,
+      .bonus-row {
+        grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+        gap: 10px;
+      }
+
+      .reward-slot,
+      .bonus-slot {
+        min-height: 100px;
+        padding: 15px 10px;
+      }
+
+      .bonus-icon {
+        font-size: 48px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <button class="back-btn" onclick="window.location.href='index.html'">← 뒤로가기</button>
+  
+  <div class="container">
+    <!-- 헤더 -->
+    <div class="header">
+      <div class="calendar-icon">📅</div>
+      <div class="header-title">
+        <h1>2월의 시작! 출석이벤트</h1>
+        <p>이번달 일일일 개근했네요! 😊</p>
+      </div>
+      <div class="star-icon">⭐</div>
+    </div>
+
+    <!-- 일일 출석 이벤트 -->
+    <div class="daily-section">
+      <div class="section-title">일일 출석 보상</div>
+      <div class="reward-row">
+        <div class="reward-slot available">
+          <div class="day-badge">1일</div>
+          <div class="reward-icon">🪙</div>
+          <div class="reward-quantity">100</div>
+        </div>
+        <div class="reward-slot">
+          <div class="day-badge">2일</div>
+          <div class="reward-icon">📜</div>
+          <div class="reward-quantity">5</div>
+        </div>
+        <div class="reward-slot">
+          <div class="day-badge">3일</div>
+          <div class="reward-icon">💵</div>
+          <div class="reward-quantity">3</div>
+        </div>
+        <div class="reward-slot">
+          <div class="day-badge">4일</div>
+          <div class="reward-icon">🎫</div>
+          <div class="reward-quantity">10</div>
+        </div>
+        <div class="reward-slot">
+          <div class="day-badge">5일</div>
+          <div class="reward-icon">🃏</div>
+          <div class="reward-quantity">200</div>
+        </div>
+        <div class="reward-slot">
+          <div class="day-badge">6일</div>
+          <div class="reward-icon">📜</div>
+          <div class="reward-quantity">5</div>
+        </div>
+        <div class="reward-slot">
+          <div class="day-badge">7일</div>
+          <div class="reward-icon">💵</div>
+          <div class="reward-quantity">10</div>
+        </div>
+        <div class="reward-slot">
+          <div class="day-badge">8일</div>
+          <div class="reward-icon">🎫</div>
+          <div class="reward-quantity">100</div>
+        </div>
+        <div class="reward-slot">
+          <div class="day-badge">9일</div>
+          <div class="reward-icon">📜</div>
+          <div class="reward-quantity">2</div>
+        </div>
+        <div class="reward-slot">
+          <div class="day-badge">10일</div>
+          <div class="reward-icon">🎫</div>
+          <div class="reward-quantity">10</div>
+        </div>
+        <div class="reward-slot">
+          <div class="day-badge">11일</div>
+          <div class="reward-icon">💵</div>
+          <div class="reward-quantity">300</div>
+        </div>
+        <div class="reward-slot">
+          <div class="day-badge">12일</div>
+          <div class="reward-icon">🎫</div>
+          <div class="reward-quantity">10</div>
+        </div>
+        <div class="reward-slot">
+          <div class="day-badge">13일</div>
+          <div class="reward-icon">📜</div>
+          <div class="reward-quantity">10</div>
+        </div>
+      </div>
+
+      <div class="confirm-section">
+        <p class="confirm-text">위에서 보상을 확인하세요</p>
+        <button class="confirm-btn"><span>확인</span></button>
+        <p class="register-text">박스에 한정판 등록</p>
+      </div>
+    </div>
+
+    <!-- 한달 연속출석 보너스 -->
+    <div class="monthly-section">
+      <div class="monthly-header">
+        <div class="crown-icon">👑</div>
+        <h2>한달 연속출석 보너스</h2>
+      </div>
+
+      <div class="bonus-row">
+        <div class="bonus-slot">
+          <div class="bonus-day">7</div>
+          <div class="bonus-icon">🎫</div>
+          <div class="bonus-text">던전입장권 2</div>
+        </div>
+        <div class="bonus-slot">
+          <div class="bonus-day">14</div>
+          <div class="bonus-icon">🃏</div>
+          <div class="bonus-text">커스텀카드 2</div>
+        </div>
+        <div class="bonus-slot">
+          <div class="bonus-day">21</div>
+          <div class="bonus-icon">🃏</div>
+          <div class="bonus-text">커스텀카드 3</div>
+        </div>
+        <div class="bonus-slot final">
+          <div class="bonus-day">30</div>
+          <div class="bonus-icon">📦</div>
+          <div class="bonus-text">BP 15 + 커스텀카드 + 던전입장권 3</div>
+        </div>
+      </div>
+
+      <div class="progress-container">
+        <div class="progress-bar-wrapper">
+          <div class="progress-bar" style="width: 0%"></div>
+        </div>
+        <div class="progress-text">0/30일 완주</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
